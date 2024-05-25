@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comment-mongo-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:latest
+        ports:
+        - containerPort: 27017
+        env:
+        - name: MONGO_INITDB_DATABASE
+          value: comment-service-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comment-mongo-service
+spec:
+  selector:
+    app: mongo
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comment-service
+  labels:
+    app: comment-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comment-service
+  template:
+    metadata:
+      labels:
+        app: comment-service
+    spec:
+      containers:
+        - name: comment-service
+          image: datuits/devops-comment-service:latest
+          ports:
+            - containerPort: 8082
+          env:
+          - name: SPRING_DATA_MONGODB_URI
+            value: mongodb://comment-mongo-service:27017/comment-service-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comment-service
+spec:
+  selector:
+    app: comment-service
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
+  type: ClusterIP
