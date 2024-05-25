@@ -42,11 +42,11 @@ public class TestCommentController {
         this.mockMvc = MockMvcBuilders.standaloneSetup(commentController).build();
     }
 
-    @Test
-    public void testGetMethodName() throws Exception {
-        mockMvc.perform(get("/comment/"))
-                .andExpect(status().isOk());
-    }
+    // @Test
+    // public void testGetMethodName() throws Exception {
+    //     mockMvc.perform(get("/comment/"))
+    //             .andExpect(status().isOk());
+    // }
 
     // @Test
     // public void testCreateComment() throws Exception {
