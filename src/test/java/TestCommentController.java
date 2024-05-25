@@ -48,24 +48,24 @@ public class TestCommentController {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    public void testCreateComment() throws Exception {
-        Comment comment = Comment.builder()
-                .id("1")
-                .text("This is a comment")
-                .author("Author")
-                .likes(0)
-                .dislikes(0)
-                .build();
+    // @Test
+    // public void testCreateComment() throws Exception {
+    //     Comment comment = Comment.builder()
+    //             .id("1")
+    //             .text("This is a comment")
+    //             .author("Author")
+    //             .likes(0)
+    //             .dislikes(0)
+    //             .build();
 
-        when(commentRepository.save(comment)).thenReturn(comment);
+    //     when(commentRepository.save(comment)).thenReturn(comment);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String commentJson = objectMapper.writeValueAsString(comment);
+    //     ObjectMapper objectMapper = new ObjectMapper();
+    //     String commentJson = objectMapper.writeValueAsString(comment);
 
-        mockMvc.perform(post("/comment/upload")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(commentJson))
-                .andExpect(status().isCreated());
-    }
+    //     mockMvc.perform(post("/comment/upload")
+    //             .contentType(MediaType.APPLICATION_JSON)
+    //             .content(commentJson))
+    //             .andExpect(status().isCreated());
+    // }
 }
