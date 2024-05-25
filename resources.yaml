@@ -20,6 +20,9 @@ spec:
         env:
         - name: MONGO_INITDB_DATABASE
           value: comment-service-db
+        resources:
+          limits:
+            memory: "256Mi"
 ---
 apiVersion: v1
 kind: Service
@@ -58,6 +61,9 @@ spec:
           env:
           - name: SPRING_DATA_MONGODB_URI
             value: mongodb://comment-mongo-service:27017/comment-service-db
+          resources:
+            limits:
+              memory: "256Mi"
 ---
 apiVersion: v1
 kind: Service
@@ -71,4 +77,3 @@ spec:
       port: 8082
       targetPort: 8082
   type: ClusterIP
-  
