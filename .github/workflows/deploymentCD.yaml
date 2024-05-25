@@ -58,8 +58,3 @@ jobs:
       - name: Apply Kubernetes manifests
         run: |
           kubectl apply -f resources.yaml
-   
-
-
-
-          
