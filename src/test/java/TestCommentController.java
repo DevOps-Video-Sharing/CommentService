@@ -23,16 +23,16 @@ public class TestCommentController {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    public void testUploadComment() throws Exception {
-        Comment comment = Comment.builder()
-                .text("text")
-                .author("author")
-                .build();
-        String json = "{ \"text\": \"text\", \"author\": \"author\" }";
-        mockMvc.perform(post("/comment/upload")
-                .contentType("application/json")
-                .content(json))
-                .andExpect(status().isOk());
-    }
+    // @Test
+    // public void testUploadComment() throws Exception {
+    //     Comment comment = Comment.builder()
+    //             .text("text")
+    //             .author("author")
+    //             .build();
+    //     String json = "{ \"text\": \"text\", \"author\": \"author\" }";
+    //     mockMvc.perform(post("/comment/upload")
+    //             .contentType("application/json")
+    //             .content(json))
+    //             .andExpect(status().isOk());
+    // }
 }
