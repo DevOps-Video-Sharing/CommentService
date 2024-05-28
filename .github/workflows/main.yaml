@@ -24,14 +24,14 @@ jobs:
       - name: Unit Tests
         run: mvn -B test --file pom.xml
 
-  build-image:
-    needs: testing
-    uses: ./.github/workflows/build-image.yaml
+  # build-image:
+  #   needs: testing
+  #   uses: ./.github/workflows/build-image.yaml
 
-  scan-image:
-    needs: build-image
-    uses: ./.github/workflows/scan-image.yaml
+  # scan-image:
+  #   needs: build-image
+  #   uses: ./.github/workflows/scan-image.yaml
 
-  notify:
-    needs: scan-image
-    uses: ./.github/workflows/notify.yaml
+  # notify:
+  #   needs: scan-image
+  #   uses: ./.github/workflows/notify.yaml
