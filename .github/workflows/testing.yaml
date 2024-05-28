@@ -1,8 +1,9 @@
 name: Testing Comment Service
+
 on:
   workflow_call:
 
-job:
+jobs:
   testing:
     name: Testing Comment Service 
     runs-on: ubuntu-latest
