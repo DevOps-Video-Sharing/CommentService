@@ -4,8 +4,10 @@ on:
     workflows: ["Continuous Integration for Comment Service"]
     types:
       - completed
+
 jobs:
   slack_notifier:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Send notification on Slack using Webhooks
@@ -13,7 +15,7 @@ jobs:
         with:
           payload: |
             {
-            "text": "Git push done in the repo"
+              "text": "Git push done in the Comment Service"
             }
         env:
-          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
+          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
