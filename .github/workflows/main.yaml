@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-deploy:
+  testing:
     name: Testing Comment Service 
     runs-on: ubuntu-latest
     steps:
@@ -36,11 +36,15 @@ jobs:
           username: datuits
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
+jobs:
+  build-image:
       - name: Build and Push the docker image
         run: |
           docker build -t datuits/devops-comment-service:latest .
           docker push datuits/devops-comment-service:latest
 
+jobs:
+  scan-image:
       - name: Install Trivy
         run: |
           sudo apt-get update
@@ -78,3 +82,32 @@ jobs:
         with:
           name: vulnerability-report
           path: vulnerability-report.md
+
+jobs:
+  success_notifier:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send success notification on Slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "The Continuous Integration for Comment Service workflow has completed successfully."
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  failure_notifier:
+    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send failure notification on Slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "The Continuous Integration for Comment Service workflow has failed."
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
