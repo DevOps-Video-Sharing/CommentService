@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-deploy:
-    name: Build and Deploy Comment Service 
+    name: Testing Comment Service 
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

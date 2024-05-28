@@ -13,7 +13,7 @@
 
 # jobs:
 #   deploy:
-#     name: Deploy to GKE Autopilot
+#     name: Deploy Comment Service to GKE Autopilot
 #     runs-on: ubuntu-latest
 #     steps:
 #       - name: Checkout code
