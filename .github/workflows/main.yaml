@@ -1,80 +1,80 @@
-name: Continuous Integration for Comment Service
+# name: Continuous Integration for Comment Service
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-jobs:
-  build-deploy:
-    name: Build and Deploy Comment Service 
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+# jobs:
+#   build-deploy:
+#     name: Build and Deploy Comment Service 
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
 
-      - name: Setup JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'corretto'
-          java-version: 17
+#       - name: Setup JDK 17
+#         uses: actions/setup-java@v3
+#         with:
+#           distribution: 'corretto'
+#           java-version: 17
       
-      - name: Build the application
-        run: |
-          mvn clean
-          mvn -B package --file pom.xml
+#       - name: Build the application
+#         run: |
+#           mvn clean
+#           mvn -B package --file pom.xml
 
-      - name: Set up MongoDB URI
-        run: echo "SPRING_DATA_MONGODB_URI=mongodb://localhost:27017/comment-service" >> $GITHUB_ENV
+#       - name: Set up MongoDB URI
+#         run: echo "SPRING_DATA_MONGODB_URI=mongodb://localhost:27017/comment-service" >> $GITHUB_ENV
 
-      - name: Unit Tests
-        run: mvn -B test --file pom.xml
+#       - name: Unit Tests
+#         run: mvn -B test --file pom.xml
       
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: datuits
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+#       - name: Login to Docker Hub
+#         uses: docker/login-action@v1
+#         with:
+#           username: datuits
+#           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Build and Push the docker image
-        run: |
-          docker build -t datuits/devops-comment-service:latest .
-          docker push datuits/devops-comment-service:latest
+#       - name: Build and Push the docker image
+#         run: |
+#           docker build -t datuits/devops-comment-service:latest .
+#           docker push datuits/devops-comment-service:latest
 
-      - name: Install Trivy
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget
-          wget https://github.com/aquasecurity/trivy/releases/download/v0.40.0/trivy_0.40.0_Linux-64bit.deb
-          sudo dpkg -i trivy_0.40.0_Linux-64bit.deb
+#       - name: Install Trivy
+#         run: |
+#           sudo apt-get update
+#           sudo apt-get install -y wget
+#           wget https://github.com/aquasecurity/trivy/releases/download/v0.40.0/trivy_0.40.0_Linux-64bit.deb
+#           sudo dpkg -i trivy_0.40.0_Linux-64bit.deb
 
-      - name: Scan Docker image with Trivy
-        id: scan-image
-        run: |
-          trivy image --format json --output scan-results.json datuits/devops-comment-service:latest
+#       - name: Scan Docker image with Trivy
+#         id: scan-image
+#         run: |
+#           trivy image --format json --output scan-results.json datuits/devops-comment-service:latest
         
-      - name: Extract high and critical vulnerabilities
-        id: extract_vulnerabilities
-        run: |
-          jq -r '
-          def hr(severity):
-            if severity == "HIGH" or severity == "CRITICAL" then true else false end;
-          def to_md:
-            "| " + (.VulnerabilityID // "") + " | " + (.PkgName // "") + " | " + (.InstalledVersion // "") + " | " + (.Severity // "") + " | " + (.Title // "") + " |";
-          [
-            "# Docker Image Scan Results",
-            "",
-            "## High and Critical Vulnerabilities",
-            "",
-            "| Vulnerability ID | Package | Version | Severity | Description |",
-            "|------------------|---------|---------|----------|-------------|",
-            (.Results[] | .Vulnerabilities[] | select(hr(.Severity)) | to_md),
-            ""
-          ] | join("\n")
-          ' scan-results.json > vulnerability-report.md
+#       - name: Extract high and critical vulnerabilities
+#         id: extract_vulnerabilities
+#         run: |
+#           jq -r '
+#           def hr(severity):
+#             if severity == "HIGH" or severity == "CRITICAL" then true else false end;
+#           def to_md:
+#             "| " + (.VulnerabilityID // "") + " | " + (.PkgName // "") + " | " + (.InstalledVersion // "") + " | " + (.Severity // "") + " | " + (.Title // "") + " |";
+#           [
+#             "# Docker Image Scan Results",
+#             "",
+#             "## High and Critical Vulnerabilities",
+#             "",
+#             "| Vulnerability ID | Package | Version | Severity | Description |",
+#             "|------------------|---------|---------|----------|-------------|",
+#             (.Results[] | .Vulnerabilities[] | select(hr(.Severity)) | to_md),
+#             ""
+#           ] | join("\n")
+#           ' scan-results.json > vulnerability-report.md
 
-      - name: Upload vulnerability report
-        uses: actions/upload-artifact@v2
-        with:
-          name: vulnerability-report
-          path: vulnerability-report.md
+#       - name: Upload vulnerability report
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: vulnerability-report
+#           path: vulnerability-report.md
