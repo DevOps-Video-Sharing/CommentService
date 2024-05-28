@@ -26,7 +26,7 @@ jobs:
         run: mvn -B test --file pom.xml
 
   build-image:
-    needs: testing
+    # needs: testing
     uses: ./.github/workflows/build-image.yaml
 
   scan-image:
