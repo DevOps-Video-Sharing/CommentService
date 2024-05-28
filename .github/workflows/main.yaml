@@ -35,6 +35,7 @@ jobs:
   build-image:
     needs: testing
     uses: ./.github/workflows/build-image.yaml
+    
 
   scan-image:
     needs: build-image

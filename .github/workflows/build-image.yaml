@@ -2,9 +2,8 @@ name: Build Image Comment Service
 
 on:
   workflow_call:
-    # secrets:
-    #   DOCKER_HUB_ACCESS_TOKEN:
-    #     required: true
+    secrets:
+      - DOCKER_HUB_ACCESS_TOKEN
 
 jobs:
   build-image:
