@@ -1,0 +1,19 @@
+name: slack_github_action
+on:
+  workflow_run:
+    workflows: ["Continuous Integration for Comment Service"]
+    types:
+      - completed
+jobs:
+  slack_notifier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification on Slack using Webhooks
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+            "text": "Git push done in the repo"
+            }
+        env:
+          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
