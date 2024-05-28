@@ -1,10 +1,6 @@
 name: Build Image Comment Service
-# on:
-#   workflow_call:
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
 
 jobs:
   build-image:
