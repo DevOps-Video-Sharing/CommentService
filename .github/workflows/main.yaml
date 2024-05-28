@@ -48,3 +48,6 @@ jobs:
   notify:
     needs: scan-image
     uses: ./.github/workflows/notify.yaml
+    with:
+      secrets:
+        DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
