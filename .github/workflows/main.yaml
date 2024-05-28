@@ -10,10 +10,13 @@ jobs:
     uses: ./.github/workflows/testing.yaml
 
   build-image:
+    needs: testing
     uses: ./.github/workflows/build-image.yaml
 
   scan-image:
+    needs: build-image
     uses: ./.github/workflows/scan-image.yaml
 
   notify:
+    needs: scan-image
     uses: ./.github/workflows/notify.yaml
