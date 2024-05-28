@@ -1,6 +1,6 @@
 name: slack_github_action
 
-on:
+# on:
   # workflow_run:
   #   workflows: ["Continuous Integration for Comment Service"]
   #   types:
