@@ -23,10 +23,10 @@ jobs:
           mvn -B package --file pom.xml
 
       - name: Print Docker Hub Username (for debugging)
-        run: echo "${{ secrets.DOCKER_HUB_ACCESS_USER }}"
+        run: echo "Docker Hub Username: ${{ secrets.DOCKER_HUB_ACCESS_USER }}"
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_ACCESS_USER }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
