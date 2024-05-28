@@ -1,15 +1,18 @@
-name: slack_github_action
 on: [push]
+
 jobs:
-  slack_notifier:
+  new_push_job:
     runs-on: ubuntu-latest
+    name: New push to repo
     steps:
-      - name: Send notification on Slack using Webhooks
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          payload: |
-            '{
-            "text": "Git push done in the repo"
-            }'
-        env:
-          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
+    - name: Send GitHub trigger payload to Slack Workflow Builder
+      id: slack
+      uses: slackapi/slack-github-action@v1.26.0
+      with:
+        payload: |
+          {
+            "text": "This is my repo",
+          }
+      env:
+        SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
