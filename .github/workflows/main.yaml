@@ -37,9 +37,9 @@ jobs:
     steps:
       - name: Build Image Comment Service
         uses: ./.github/workflows/build-image.yaml
-        with:
-          secrets:
-            DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+        env:
+          DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
 
   scan-image:
     needs: build-image
