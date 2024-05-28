@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   new_push_job:
-    uns-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Send notification on Slack using Webhooks
         uses: slackapi/slack-github-action@v1.24.0
