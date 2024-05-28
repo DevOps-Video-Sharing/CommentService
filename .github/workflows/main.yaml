@@ -33,18 +33,18 @@ jobs:
 
   build-image:
     needs: testing
-    uses: ./.github/workflows/build-image.yaml
-    env:
-        DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Image Comment Service
+        uses: ./.github/workflows/build-image.yaml
+        with:
+          secrets:
+            DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   scan-image:
     needs: build-image
     uses: ./.github/workflows/scan-image.yaml
-    env:
-        DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   notify:
     needs: scan-image
     uses: ./.github/workflows/notify.yaml
-    env:
-        DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
