@@ -7,16 +7,30 @@ on:
       - completed
 
 jobs:
-  slack_notifier:
+  success_notifier:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Send notification on Slack using Webhooks
+      - name: Send success notification on Slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
           payload: |
             {
-              "text": "The Continuous Integration for Comment Service workflow has completed successfully at ${{ github.event.workflow_run.completed_at }}."
+              "text": "The Continuous Integration for Comment Service workflow has completed successfully."
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  failure_notifier:
+    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send failure notification on Slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "The Continuous Integration for Comment Service workflow has failed."
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
