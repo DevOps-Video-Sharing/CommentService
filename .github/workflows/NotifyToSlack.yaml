@@ -16,7 +16,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "The Continuous Integration for Comment Service workflow has completed successfully."
+              "text": "The Continuous Integration for Comment Service workflow has completed successfully at ${{ github.event.workflow_run.completed_at }}."
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
