@@ -25,10 +25,6 @@ jobs:
           distribution: 'corretto'
           java-version: 17
 
-      - name: Build the application
-        run: |
-          mvn clean
-          mvn -B package --file pom.xml
       
       - name: Authenticate
         uses: google-github-actions/auth@v2
