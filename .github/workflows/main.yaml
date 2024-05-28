@@ -34,20 +34,17 @@ jobs:
   build-image:
     needs: testing
     uses: ./.github/workflows/build-image.yaml
-    with:
-      secrets:
+    env:
         DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   scan-image:
     needs: build-image
     uses: ./.github/workflows/scan-image.yaml
-    with:
-      secrets:
+    env:
         DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   notify:
     needs: scan-image
     uses: ./.github/workflows/notify.yaml
-    with:
-      secrets:
+    env:
         DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
