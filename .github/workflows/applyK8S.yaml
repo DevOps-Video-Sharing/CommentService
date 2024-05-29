@@ -1,0 +1,14 @@
+name: Apply Kubernetes manifests
+
+on:
+  workflow_call:
+
+
+jobs:
+  apply-k8s:
+    name: Apply Kubernetes manifests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Apply Kubernetes manifests
+        run: |
+          kubectl apply -f resources.yaml
