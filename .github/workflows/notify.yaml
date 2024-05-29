@@ -2,6 +2,9 @@ name: Send Slack Notification
 
 on:
   workflow_call:
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
 
 jobs:
   success_notifier:
