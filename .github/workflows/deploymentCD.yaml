@@ -41,26 +41,9 @@ jobs:
         run: |
           gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }} --project ${{ env.PROJECT_ID }}
 
-  # apply-k8s:
-  #   needs: deploy
-  #   uses: ./.github/workflows/applyK8S.yaml
-jobs:
   apply-k8s:
-    name: Apply Kubernetes manifests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'corretto'
-          java-version: 17
-
-      - name: Apply Kubernetes manifests
-        run: |
-          kubectl apply -f ./.github/workflows/K8S
+    needs: deploy
+    uses: ./.github/workflows/applyK8S.yaml
 
   notify:
     needs: apply-k8s
