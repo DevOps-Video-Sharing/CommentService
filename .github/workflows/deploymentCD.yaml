@@ -42,7 +42,7 @@ jobs:
           gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }} --project ${{ env.PROJECT_ID }}
 
   apply-k8s:
-    needs:  deploy
+    needs: deploy
     uses: ./.github/workflows/applyK8S.yaml
 
   notify:

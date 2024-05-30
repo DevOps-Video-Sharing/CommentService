@@ -17,7 +17,7 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: 17
-          
+
       - name: Apply Kubernetes manifests
         run: |
-          kubectl apply -f .github/workflows/K8S/resources.yaml
+          kubectl apply -f ./.github/workflows/K8S
