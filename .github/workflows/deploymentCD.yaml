@@ -41,6 +41,7 @@ jobs:
 
       - name: Set cluster context
         run: |
+          mkdir -p $HOME/.kube
           gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }} --project ${{ env.PROJECT_ID }}
         
       - name: Store kubeconfig

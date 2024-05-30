@@ -17,6 +17,7 @@ jobs:
 
       - name: Setup kubeconfig
         run: |
+          mkdir -p $HOME/.kube
           echo "${{ inputs.kubeconfig }}" | base64 --decode > $HOME/.kube/config
 
       - name: Validate Kubernetes configuration
