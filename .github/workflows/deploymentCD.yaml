@@ -39,7 +39,19 @@ jobs:
 
       - name: Set cluster context
         run: |
+          mkdir -p $HOME/.kube
           gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }} --project ${{ env.PROJECT_ID }}
+
+      - name: Save kubeconfig
+        run: |
+          cat $HOME/.kube/config | base64 | tr -d '\n' > kubeconfig.txt
+        id: kubeconfig
+
+      - name: Upload kubeconfig
+        uses: actions/upload-artifact@v3
+        with:
+          name: kubeconfig
+          path: kubeconfig.txt
 
   apply-k8s:
     needs: deploy
@@ -50,4 +62,3 @@ jobs:
     uses: ./.github/workflows/notifyCD.yaml
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-  
