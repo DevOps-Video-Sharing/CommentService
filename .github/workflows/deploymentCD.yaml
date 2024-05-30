@@ -16,6 +16,8 @@ jobs:
     name: Connect to Cluster GKE
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    outputs:
+      kubeconfig: ${{ steps.store-kubeconfig.outputs.kubeconfig }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -42,21 +44,16 @@ jobs:
           gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }} --project ${{ env.PROJECT_ID }}
         
       - name: Store kubeconfig
+        id: store-kubeconfig
         run: |
           cat $HOME/.kube/config | base64 | tr -d '\n' > kubeconfig.txt
-        id: kubeconfig
-        
-      - name: Upload kubeconfig
-        uses: actions/upload-artifact@v2
-        with:
-          name: kubeconfig
-          path: kubeconfig.txt
+          echo "::set-output name=kubeconfig::$(cat kubeconfig.txt)"
 
   apply-k8s:
     needs: deploy
     uses: ./.github/workflows/applyK8S.yaml
     with:
-      kubeconfig: ${{ steps.kubeconfig.outputs.kubeconfig }}
+      kubeconfig: ${{ needs.deploy.outputs.kubeconfig }}
 
   notify:
     needs: apply-k8s
