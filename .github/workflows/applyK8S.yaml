@@ -11,6 +11,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Validate Kubernetes configuration
+        run: |
+          kubectl get nodes
+
       - name: Apply Kubernetes manifests
         run: |
           kubectl apply -f .github/workflows/K8S/resources.yaml
