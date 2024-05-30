@@ -2,6 +2,10 @@ name: Apply Kubernetes manifests
 
 on:
   workflow_call:
+    inputs:
+      kubeconfig:
+        required: true
+        type: string
 
 jobs:
   apply-k8s:
@@ -10,6 +14,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Setup kubeconfig
+        run: |
+          echo "${{ inputs.kubeconfig }}" | base64 --decode > $HOME/.kube/config
 
       - name: Validate Kubernetes configuration
         run: |

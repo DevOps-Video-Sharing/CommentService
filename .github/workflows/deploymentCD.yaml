@@ -40,10 +40,23 @@ jobs:
       - name: Set cluster context
         run: |
           gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }} --project ${{ env.PROJECT_ID }}
+        
+      - name: Store kubeconfig
+        run: |
+          cat $HOME/.kube/config | base64 | tr -d '\n' > kubeconfig.txt
+        id: kubeconfig
+        
+      - name: Upload kubeconfig
+        uses: actions/upload-artifact@v2
+        with:
+          name: kubeconfig
+          path: kubeconfig.txt
 
   apply-k8s:
     needs: deploy
     uses: ./.github/workflows/applyK8S.yaml
+    with:
+      kubeconfig: ${{ steps.kubeconfig.outputs.kubeconfig }}
 
   notify:
     needs: apply-k8s
