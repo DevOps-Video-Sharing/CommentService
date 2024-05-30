@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Apply Kubernetes manifests
         run: |
-          kubectl apply -f ./.github/workflows/K8S/resources.yaml
+          kubectl apply -f .github/workflows/K8S/resources.yaml
