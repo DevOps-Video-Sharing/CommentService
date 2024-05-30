@@ -6,6 +6,7 @@ on:
     types:
       - completed
 
+
 env:
   PROJECT_ID: gke-project-423206
   CLUSTER_NAME: autopilot-cluster-1
