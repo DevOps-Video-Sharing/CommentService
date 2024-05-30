@@ -6,7 +6,6 @@ on:
     types:
       - completed
 
-
 env:
   PROJECT_ID: gke-project-423206
   CLUSTER_NAME: autopilot-cluster-1
@@ -43,7 +42,7 @@ jobs:
           gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }} --project ${{ env.PROJECT_ID }}
 
   apply-k8s:
-    needs:  deploy
+    needs: deploy
     uses: ./.github/workflows/applyK8S.yaml
 
   notify:
@@ -51,4 +50,3 @@ jobs:
     uses: ./.github/workflows/notifyCD.yaml
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-  
