@@ -16,8 +16,6 @@ jobs:
     name: Connect to Cluster GKE
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    outputs:
-      kubeconfig: ${{ steps.store-kubeconfig.outputs.kubeconfig }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -41,23 +39,15 @@ jobs:
 
       - name: Set cluster context
         run: |
-          mkdir -p $HOME/.kube
           gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }} --project ${{ env.PROJECT_ID }}
-        
-      - name: Store kubeconfig
-        id: store-kubeconfig
-        run: |
-          cat $HOME/.kube/config | base64 | tr -d '\n' > kubeconfig.txt
-          echo "::set-output name=kubeconfig::$(cat kubeconfig.txt)"
 
   apply-k8s:
-    needs: deploy
-    uses: ./.github/workflows/applyK8S.yaml
-    with:
-      kubeconfig: ${{ needs.deploy.outputs.kubeconfig }}
+    needs:  deploy
+    uses: ./.github/workflows/apply-k8s.yaml
 
   notify:
     needs: apply-k8s
     uses: ./.github/workflows/notifyCD.yaml
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  

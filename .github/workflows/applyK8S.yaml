@@ -2,28 +2,13 @@ name: Apply Kubernetes manifests
 
 on:
   workflow_call:
-    inputs:
-      kubeconfig:
-        required: true
-        type: string
+
 
 jobs:
   apply-k8s:
     name: Apply Kubernetes manifests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup kubeconfig
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ inputs.kubeconfig }}" | base64 --decode > $HOME/.kube/config
-
-      - name: Validate Kubernetes configuration
-        run: |
-          kubectl get nodes
-
       - name: Apply Kubernetes manifests
         run: |
           kubectl apply -f .github/workflows/K8S/resources.yaml
