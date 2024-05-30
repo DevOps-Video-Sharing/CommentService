@@ -44,7 +44,7 @@ jobs:
 
   apply-k8s:
     needs:  deploy
-    uses: ./.github/workflows/apply-k8s.yaml
+    uses: ./.github/workflows/applyK8S.yaml
 
   notify:
     needs: apply-k8s
