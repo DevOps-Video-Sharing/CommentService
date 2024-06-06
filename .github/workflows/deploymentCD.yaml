@@ -43,7 +43,7 @@ jobs:
 
       - name: Apply Kubernetes manifests
         run: |
-          kubectl apply -f .github/workflow/K8S/resources.yaml
+          kubectl apply -f resources.yaml
 
   notify:
     needs: deploy
