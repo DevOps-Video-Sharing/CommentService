@@ -25,13 +25,6 @@ jobs:
 
       - name: Unit Tests
         run: mvn -B test --file pom.xml
-  
-  sonarQube:
-    needs: testing
-    uses: ./.github/workflows/sonarQube.yaml
-    secrets:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONARQUBE_URL: ${{ secrets.SONARQUBE_URL }}
 
   build-image:
     needs: testing
