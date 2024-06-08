@@ -27,11 +27,13 @@ jobs:
         run: mvn -B test --file pom.xml
 
       - name: SonarQube Scan
-        run: mvn sonar:sonar -Dsonar.projectKey=devops-video-sharing
+        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:4.0.0.4121:sonar \
+              -Dsonar.projectKey=devops-video-sharing \
+              -Dsonar.host.url=${{ secrets.SONARQUBE_URL }} \
+              -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONARQUBE_URL: ${{ secrets.SONARQUBE_URL }}
-  
 
   build-image:
     needs: testing
