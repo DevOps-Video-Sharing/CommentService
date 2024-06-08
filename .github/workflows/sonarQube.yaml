@@ -1,4 +1,5 @@
 name: SonarQube Scan
+
 on:
   workflow_call:
     secrets:
@@ -34,7 +35,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn clean verify sonar:sonar \
-          -Dsonar.projectKey=your_project_key \
-          -Dsonar.organization=your_organization \
+          -Dsonar.projectKey=devops-video-sharing \
+          -Dsonar.organization=devops-video-sharing \
           -Dsonar.host.url=${{ secrets.SONARQUBE_URL }} \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
