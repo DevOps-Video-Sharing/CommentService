@@ -26,6 +26,13 @@ jobs:
       - name: Unit Tests
         run: mvn -B test --file pom.xml
 
+      - name: SonarQube Scan
+        run: mvn sonar:sonar -Dsonar.projectKey=devops-video-sharing
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONARQUBE_URL: ${{ secrets.SONARQUBE_URL }}
+  
+
   build-image:
     needs: testing
     uses: ./.github/workflows/build-image.yaml
