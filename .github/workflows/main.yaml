@@ -28,7 +28,7 @@ jobs:
 
   sonarQube:
     needs: testing
-    uses: ./github/workflows/sonarQube.yaml
+    uses: ./.github/workflows/sonarQube.yaml
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       SONARQUBE_URL: ${{ secrets.SONARQUBE_URL }}
