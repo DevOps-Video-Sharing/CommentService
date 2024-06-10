@@ -2,6 +2,12 @@ package com.programming.streaming.service;
 
 import org.springframework.stereotype.Service;
 
+import com.programming.streaming.model.Comment;
+import com.programming.streaming.repository.CommentRepository;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 @Service
 public class CommentService {
     @Autowired
