@@ -25,17 +25,13 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class CommentController {
     private final CommentRepository commentRepository;
-    private final CommentService commentService;
-    @GetMapping("/")    
-    public ResponseEntity<Map<String, String>> getMethodName() {
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Comment service");
-        return ResponseEntity.ok(response);
-    }
-    
 
+    @Autowired
+    private CommentService commentService;
+
+    @CrossOrigin(origins = "*")
     @PostMapping("/upload")
-    public ResponseEntity uploadComment(@RequestBody Comment comment) {
+    public ResponseEntity<?> uploadComment(@RequestBody Comment comment) {
         try {
             Comment save = commentRepository.save(comment);
             return ResponseEntity.ok(HttpStatus.CREATED);
@@ -44,10 +40,11 @@ public class CommentController {
         }
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/get/{id}")
-    public ResponseEntity getComment(@RequestBody Comment comment) {
+    public ResponseEntity<?> getComment(@PathVariable String id) {
         try {
-            Comment commentFromDb = commentRepository.findById(comment.getId())
+            Comment commentFromDb = commentRepository.findById(id)
                     .orElseThrow(() -> new Exception("Comment not found"));
             return ResponseEntity.ok(commentFromDb);
         } catch (Exception e) {
@@ -55,8 +52,9 @@ public class CommentController {
         }
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/getAll")
-    public ResponseEntity getAllComments() {
+    public ResponseEntity<?> getAllComments() {
         try {
             return ResponseEntity.ok(commentRepository.findAll());
         } catch (Exception e) {
@@ -64,11 +62,22 @@ public class CommentController {
         }
     }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/getAllCommentByVideoId/{videoId}")
+    public ResponseEntity<?> getAllCommentByVideoId(@PathVariable String videoId) {
+        try {
+            return ResponseEntity.ok(commentRepository.findAllByVideoId(videoId));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @CrossOrigin(origins = "*")
     @PutMapping("/update/{id}")
-    public ResponseEntity updateComment(@PathVariable("id") String id, @RequestBody Comment comment) {
+    public ResponseEntity<?> updateComment(@PathVariable("id") String id, @RequestBody Comment comment) {
         try {
             Comment commentFromDb = commentRepository.findById(id)
-                .orElseThrow(() -> new Exception("Comment not found"));
+                    .orElseThrow(() -> new Exception("Comment not found"));
             commentFromDb.setText(comment.getText());
             Comment save = commentRepository.save(commentFromDb);
             return ResponseEntity.ok(HttpStatus.OK);
@@ -77,8 +86,9 @@ public class CommentController {
         }
     }
 
+    @CrossOrigin(origins = "*")
     @PutMapping("/increaseLikes/{id}")
-    public ResponseEntity increaseLikes(@PathVariable("id") String id, @RequestParam int increment) {
+    public ResponseEntity<?> increaseLikes(@PathVariable("id") String id, @RequestParam int increment) {
         try {
             Comment commentFromDb = commentRepository.findById(id)
                     .orElseThrow(() -> new Exception("Comment not found"));
@@ -90,8 +100,9 @@ public class CommentController {
         }
     }
 
+    @CrossOrigin(origins = "*")
     @PutMapping("/increaseDislikes/{id}")
-    public ResponseEntity increaseDislikes(@PathVariable("id") String id, @RequestParam int increment) {
+    public ResponseEntity<?> increaseDislikes(@PathVariable("id") String id, @RequestParam int increment) {
         try {
             Comment commentFromDb = commentRepository.findById(id)
                     .orElseThrow(() -> new Exception("Comment not found"));
@@ -103,8 +114,9 @@ public class CommentController {
         }
     }
 
+    @CrossOrigin(origins = "*")
     @PutMapping("/decreaseLikes/{id}")
-    public ResponseEntity decreaseLikes(@PathVariable("id") String id, @RequestParam int decrement) {
+    public ResponseEntity<?> decreaseLikes(@PathVariable("id") String id, @RequestParam int decrement) {
         try {
             Comment commentFromDb = commentRepository.findById(id)
                     .orElseThrow(() -> new Exception("Comment not found"));
@@ -116,8 +128,9 @@ public class CommentController {
         }
     }
 
+    @CrossOrigin(origins = "*")
     @PutMapping("/decreaseDislikes/{id}")
-    public ResponseEntity decreaseDislikes(@PathVariable("id") String id, @RequestParam int decrement) {
+    public ResponseEntity<?> decreaseDislikes(@PathVariable("id") String id, @RequestParam int decrement) {
         try {
             Comment commentFromDb = commentRepository.findById(id)
                     .orElseThrow(() -> new Exception("Comment not found"));
@@ -129,11 +142,42 @@ public class CommentController {
         }
     }
 
+    @CrossOrigin(origins = "*")
     @PutMapping("/delete/{id}")
-    public ResponseEntity deleteComment(@RequestBody Comment comment) {
+    public ResponseEntity<?> deleteComment(@PathVariable String id) {
         try {
-            commentRepository.deleteById(comment.getId());
+            commentRepository.deleteById(id);
             return ResponseEntity.ok(HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/getALLCommentByVideoId/{videoId}")
+    public ResponseEntity<?> getCommentByVideoId(@PathVariable String videoId) {
+        List<Comment> comments = commentService.getCommentsByVideoId(videoId);
+        if (comments.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(comments);
+        }
+    }
+
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("/relyCommentByCommentId/{commentId}")
+    public ResponseEntity<?> relyCommentByCommentId(@PathVariable String commentId, @RequestBody Comment comment) {
+        try {
+            Comment commentFromDb = commentRepository.findById(commentId)
+                    .orElseThrow(() -> new Exception("Comment not found"));
+            comment.setVideoId(commentFromDb.getVideoId());
+            // comment.setUserId(commentFromDb.getUserId());
+            // comment.setUserName(commentFromDb.getUserName());
+            // comment.setAuthor(commentFromDb.getAuthor());
+            comment.setNumber(commentFromDb.getNumber() + 1);
+            Comment save = commentRepository.save(comment);
+            return ResponseEntity.ok(HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
