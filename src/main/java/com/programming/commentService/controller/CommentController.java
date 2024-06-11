@@ -31,6 +31,11 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    @GetMapping("/")
+    public String getServiceName() {
+        return "Comment Service";
+    }
+
     
     @PostMapping("/upload")
     public ResponseEntity<?> uploadComment(@RequestBody Comment comment) {

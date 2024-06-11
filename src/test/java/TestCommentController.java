@@ -17,11 +17,11 @@ public class TestCommentController {
     @Autowired
     private MockMvc mockMvc;
 
-    // @Test
-    // public void testGetServiceName() throws Exception {
-    //     mockMvc.perform(get("/comment/"))
-    //             .andExpect(status().isOk());
-    // }
+    @Test
+    public void testGetServiceName() throws Exception {
+        mockMvc.perform(get("/comment/"))
+                .andExpect(status().isOk());
+    }
 
     // @Test
     // public void testUploadComment() throws Exception {
