@@ -1,0 +1,24 @@
+name: SonarQube Scan Comment Service 
+
+on:
+  workflow_call:
+
+jobs:
+  sonarQube-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Cache SonarQube packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar-cache
+        restore-keys: ${{ runner.os }}-sonar-cache
+
+    - name: Build and analyze with SonarQube
+      env:
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        ./gradlew build
+        ./gradlew sonarqube -Dsonar.projectKey=<Your_Project_Key> -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
