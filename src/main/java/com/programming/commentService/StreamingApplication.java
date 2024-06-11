@@ -1,4 +1,4 @@
-package com.programming.streaming;
+package com.programming.commentService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

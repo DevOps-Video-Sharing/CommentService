@@ -1,8 +1,6 @@
-package com.programming.streaming.controller;
+package com.programming.commentService.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.programming.streaming.model.Comment;
-import com.programming.streaming.repository.CommentRepository;
-import com.programming.streaming.service.CommentService;
+import com.programming.commentService.model.Comment;
+import com.programming.commentService.repository.CommentRepository;
+import com.programming.commentService.service.CommentService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;

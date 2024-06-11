@@ -8,9 +8,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.programming.streaming.model.Comment;
+import com.programming.commentService.model.Comment;
 
-@SpringBootTest(classes = com.programming.streaming.StreamingApplication.class)
+@SpringBootTest(classes = com.programming.commentService.StreamingApplication.class)
 @AutoConfigureMockMvc
 public class TestCommentController {
 

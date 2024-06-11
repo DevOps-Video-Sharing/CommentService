@@ -1,9 +1,9 @@
-package com.programming.streaming.service;
+package com.programming.commentService.service;
 
 import org.springframework.stereotype.Service;
 
-import com.programming.streaming.model.Comment;
-import com.programming.streaming.repository.CommentRepository;
+import com.programming.commentService.model.Comment;
+import com.programming.commentService.repository.CommentRepository;
 
 import java.util.List;
 

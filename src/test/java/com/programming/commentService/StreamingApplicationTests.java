@@ -1,4 +1,4 @@
-package com.programming.streaming;
+package com.programming.commentService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
