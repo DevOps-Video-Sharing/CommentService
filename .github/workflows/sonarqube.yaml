@@ -15,6 +15,9 @@ jobs:
         key: ${{ runner.os }}-sonar-cache
         restore-keys: ${{ runner.os }}-sonar-cache
 
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
     - name: Build and analyze with SonarQube
       env:
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
