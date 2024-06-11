@@ -18,17 +18,28 @@ jobs:
         distribution: 'corretto'
         java-version: 17
 
-    - name: Cache SonarQube packages
-      uses: actions/cache@v3
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
       with:
-        path: ~/.sonar/cache
-        key: ${{ runner.os }}-sonar-cache
-        restore-keys: ${{ runner.os }}-sonar-cache
-
-    - name: Build and analyze with SonarQube
+        projectBaseDir: .
+        args: >
+          -Dsonar.organization=devops-video-sharing
+          -Dsonar.projectKey=DevOps-Video-Sharing_VideoSharingFrontend
       env:
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        mvn clean install
-        mvn sonar:sonar -Dsonar.projectKey=DevOps-Video-Sharing_VideoSharingFrontend -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+    # - name: Cache SonarQube packages
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: ~/.sonar/cache
+    #     key: ${{ runner.os }}-sonar-cache
+    #     restore-keys: ${{ runner.os }}-sonar-cache
+
+    # - name: Build and analyze with SonarQube
+    #   env:
+    #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #   run: |
+    #     mvn clean install
+    #     mvn sonar:sonar -Dsonar.projectKey=DevOps-Video-Sharing_VideoSharingFrontend -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
