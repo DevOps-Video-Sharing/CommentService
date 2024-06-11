@@ -25,7 +25,7 @@ RUN apt-get update && \
 WORKDIR /app
 
 # Sao chép file jar vào thư mục làm việc trong container
-COPY target/streaming-0.0.1-SNAPSHOT.jar /app.jar
+COPY target/commentService-0.0.1-SNAPSHOT.jar /app.jar
 
 # Mở cổng 8080 để giao tiếp với container bên ngoài
 EXPOSE 8080
