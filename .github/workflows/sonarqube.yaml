@@ -25,7 +25,7 @@ jobs:
         projectBaseDir: .
         args: >
           -Dsonar.organization=devops-video-sharing
-          -Dsonar.projectKey=DevOps-Video-Sharing_VideoSharingFrontend
+          -Dsonar.projectKey=DevOps-Video-Sharing_CommentService
       
 
     # - name: Cache SonarQube packages
