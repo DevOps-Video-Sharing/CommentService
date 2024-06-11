@@ -29,6 +29,9 @@ jobs:
   sonarQube-scan:
       needs: testing
       uses: ./.github/workflows/sonarqube.yaml
+      secrets:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       # - name: SonarQube Scan
       #   env:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
