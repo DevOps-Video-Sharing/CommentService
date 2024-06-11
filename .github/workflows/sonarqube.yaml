@@ -18,14 +18,14 @@ jobs:
 
     - name: SonarQube Scan
       uses: sonarsource/sonarcloud-github-action@master
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       with:
         projectBaseDir: .
         args: >
           -Dsonar.organization=devops-video-sharing
           -Dsonar.projectKey=DevOps-Video-Sharing_CommentService
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
 
     # - name: Cache SonarQube packages
