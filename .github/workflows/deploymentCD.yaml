@@ -1,15 +1,13 @@
 name: Continuous Deployment for Comment Service
 
 on:
-  workflow_run:
-    workflows: ["Continuous Integration for Comment Service"]
-    types:
-      - completed
-
-env:
-  PROJECT_ID: gke-project-423206
-  CLUSTER_NAME: autopilot-cluster-1
-  ZONE: us-central1
+  push:
+    branches:
+      - main
+env:       
+  PROJECT_ID=devops-project-426109
+  CLUSTER_NAME=autopilot-cluster-1
+  ZONE=us-central1
 
 jobs:
   deploy:
@@ -24,12 +22,11 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: 17
-
-      
+   
       - name: Authenticate
         uses: google-github-actions/auth@v2
         with: 
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          credentials_json: ${{ secrets.GCP_SA_KEY_2 }}
           
       - name: Configure gcloud
         uses: google-github-actions/setup-gcloud@v2
@@ -39,9 +36,13 @@ jobs:
 
       - name: Set cluster context
         run: |
-          gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }} --project ${{ env.PROJECT_ID }}
+          gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }}  --project ${{ env.PROJECT_ID }}
 
-      - name: Apply Kubernetes manifests
+      # - name: Apply Kubernetes manifests for database
+      #   run: |
+      #     kubectl apply -f database.yaml
+
+      - name: Apply Kubernetes manifests for application
         run: |
           kubectl apply -f resources.yaml
 
