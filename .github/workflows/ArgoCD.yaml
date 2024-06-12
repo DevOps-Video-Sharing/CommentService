@@ -52,7 +52,7 @@ jobs:
 
       - name: Wait for ArgoCD server to be ready
         run: |
-          kubectl wait --for=condition=available --timeout=600s deployment/argocd-server -n argocd
+          kubectl wait --for=condition=available --timeout=1200s deployment/argocd-server -n argocd
 
       - name: Get ArgoCD initial admin password
         id: argocd_password
@@ -77,6 +77,7 @@ jobs:
           argocd app sync comment-service
 
   notify:
+    if: always()
     needs: deploy
     uses: ./.github/workflows/notifyCD.yaml
     secrets:
