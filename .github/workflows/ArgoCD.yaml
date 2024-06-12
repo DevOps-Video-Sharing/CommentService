@@ -1,0 +1,83 @@
+name: Argo Continuous Deployment for Comment Service
+
+on:
+  push:
+    branches:
+      - main
+
+env:       
+  PROJECT_ID: devops-project-426109
+  CLUSTER_NAME: autopilot-cluster-1
+  ZONE: us-central1
+
+jobs:
+  deploy:
+    name: Deploy to GKE Autopilot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: 17
+   
+      - name: Authenticate
+        uses: google-github-actions/auth@v2
+        with: 
+          credentials_json: ${{ secrets.GCP_SA_KEY_2 }}
+          
+      - name: Configure gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          install_components: 'gke-gcloud-auth-plugin'
+
+      - name: Set cluster context
+        run: |
+          gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }}  --project ${{ env.PROJECT_ID }}
+
+      - name: Install ArgoCD CLI
+        run: |
+          curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+          rm argocd-linux-amd64
+
+      - name: Install ArgoCD in Kubernetes cluster
+        run: |
+          kubectl create namespace argocd || true
+          kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+      - name: Wait for ArgoCD server to be ready
+        run: |
+          kubectl wait --for=condition=available --timeout=600s deployment/argocd-server -n argocd
+
+      - name: Get ArgoCD initial admin password
+        id: argocd_password
+        run: |
+          ARGOCD_PASSWORD=$(kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o jsonpath='{.items[0].metadata.name}')
+          echo "::set-output name=ARGOCD_PASSWORD::${ARGOCD_PASSWORD}"
+
+      - name: Login to ArgoCD
+        run: |
+          argocd login --insecure --username admin --password ${{ steps.argocd_password.outputs.ARGOCD_PASSWORD }} --grpc-web argocd-server.argocd.svc.cluster.local:443
+
+      - name: Create ArgoCD application
+        run: |
+          argocd app create comment-service \
+            --repo https://github.com/DevOps-Video-Sharing/CommentService \
+            --path k8s \
+            --dest-server https://kubernetes.default.svc \
+            --dest-namespace default
+
+      - name: Sync ArgoCD application
+        run: |
+          argocd app sync comment-service
+
+  notify:
+    needs: deploy
+    uses: ./.github/workflows/notifyCD.yaml
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
