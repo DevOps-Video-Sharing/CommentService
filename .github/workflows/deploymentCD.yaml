@@ -5,7 +5,7 @@ on:
     branches:
       - main
 env:       
-  PROJECT_ID=devops-project-426109
+  PROJECT_ID=gke-project-423206
   CLUSTER_NAME=autopilot-cluster-1
   ZONE=us-central1
 
@@ -26,7 +26,7 @@ jobs:
       - name: Authenticate
         uses: google-github-actions/auth@v2
         with: 
-          credentials_json: ${{ secrets.GCP_SA_KEY_2 }}
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
           
       - name: Configure gcloud
         uses: google-github-actions/setup-gcloud@v2
@@ -37,10 +37,6 @@ jobs:
       - name: Set cluster context
         run: |
           gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }}  --project ${{ env.PROJECT_ID }}
-
-      # - name: Apply Kubernetes manifests for database
-      #   run: |
-      #     kubectl apply -f database.yaml
 
       - name: Apply Kubernetes manifests for application
         run: |
