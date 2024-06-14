@@ -3,15 +3,11 @@ name: Continuous Deployment for Comment Service
 on:
   push:
     branches:
-      - main
-env:       
-  PROJECT_ID=gke-project-423206
-  CLUSTER_NAME=autopilot-cluster-1
-  ZONE=us-central1
+      - dev
 
 jobs:
   deploy:
-    name: Deploy to GKE Autopilot
+    name: Deploy to Local K8S
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -23,20 +19,22 @@ jobs:
           distribution: 'corretto'
           java-version: 17
    
-      - name: Authenticate
-        uses: google-github-actions/auth@v2
-        with: 
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-          
-      - name: Configure gcloud
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ env.PROJECT_ID }}
-          install_components: 'gke-gcloud-auth-plugin'
-
-      - name: Set cluster context
+      - name: Install Minikube
         run: |
-          gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }}  --project ${{ env.PROJECT_ID }}
+          curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+          chmod +x minikube
+          sudo mv minikube /usr/local/bin/
+          
+      - name: Start Minikube
+        run: |
+          minikube start --driver=none
+
+      - name: Setup kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+          kubectl config use-context minikube
 
       - name: Apply Kubernetes manifests for application
         run: |
@@ -47,4 +45,3 @@ jobs:
     uses: ./.github/workflows/notifyCD.yaml
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-  
