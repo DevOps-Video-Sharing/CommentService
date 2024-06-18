@@ -35,7 +35,7 @@ jobs:
 
 
   notify:
-    needs: scan-image
+    needs: build-image
     uses: ./.github/workflows/notifyCI.yaml
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
