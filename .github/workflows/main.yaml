@@ -3,7 +3,7 @@ name: Continuous Integration for Comment Service
 on:
   push:
     branches:
-      - main
+      - test
 
 jobs:
   testing:
@@ -31,7 +31,7 @@ jobs:
       uses: ./.github/workflows/sonarqube.yaml
       secrets:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        
+
   scan-image:
     needs: sonarQube-scan
     uses: ./.github/workflows/scan-image.yaml
