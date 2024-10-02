@@ -2,6 +2,7 @@ package com.programming.commentService.controller;
 
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +22,22 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import lombok.AllArgsConstructor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 @RestController
 @RequestMapping("/comment")
 @AllArgsConstructor
 public class CommentController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CommentController.class);
+    
     @GetMapping("/")
     public String getServiceName() {
+        //ELK 
+        MDC.put("type", "commentservice");
+        logger.info("Comment Service Start");
         return "Comment Service";
     }
     private final CommentRepository commentRepository;
