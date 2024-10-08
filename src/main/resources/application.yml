@@ -7,3 +7,14 @@ spring:
   data:
     mongodb:
       uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/comment-service}
+      # uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27777/comment-service}
+
+
+  kafka:
+    bootstrap-servers: localhost:9092    # Địa chỉ Kafka broker
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer

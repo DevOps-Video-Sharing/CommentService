@@ -5,12 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
 import com.programming.commentService.model.Comment;
 import com.programming.commentService.repository.CommentRepository;
 import com.programming.commentService.service.CommentService;
@@ -24,6 +26,12 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/comment")
 @AllArgsConstructor
 public class CommentController {
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    private static final String TOPIC = "new-comments";
+
     private final CommentRepository commentRepository;
 
     @Autowired
@@ -38,7 +46,15 @@ public class CommentController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadComment(@RequestBody Comment comment) {
         try {
+            String commentJson = new Gson().toJson(commentRepository.save(comment));
+            kafkaTemplate.send(TOPIC, commentJson);
+
+
             Comment save = commentRepository.save(comment);
+
+
+            //Produce message to kafka
+
             return ResponseEntity.ok(HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
