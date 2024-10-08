@@ -46,6 +46,13 @@ public class CommentController {
     public ResponseEntity<?> uploadComment(@RequestBody Comment comment) {
         try {
             Comment save = commentRepository.save(comment);
+
+            MDC.put("type", "commentservice");
+            MDC.put("action", "upload");
+            logger.info("CommentId: " + save.getId());
+            logger.info("VideoId: " + comment.getVideoId());
+            logger.info("UserId: " + comment.getUserId());
+
             return ResponseEntity.ok(HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
