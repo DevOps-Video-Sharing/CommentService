@@ -46,7 +46,7 @@ public class CommentController {
     public ResponseEntity<?> uploadComment(@RequestBody Comment comment) {
         try {
             Comment save = commentRepository.save(comment);
-
+            //ELK
             MDC.put("type", "commentservice");
             MDC.put("action", "upload");
             logger.info("CommentId: " + save.getId());
