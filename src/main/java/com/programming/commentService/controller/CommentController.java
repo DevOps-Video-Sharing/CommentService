@@ -1,10 +1,15 @@
 package com.programming.commentService.controller;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,24 +47,66 @@ public class CommentController {
         return "Comment Service";
     }
 
+    private final Gson gson = new Gson();
+
+    private final ConcurrentHashMap<String, CompletableFuture<Comment>> futures = new ConcurrentHashMap<>();
+    private static final String SANITIZE_TOPIC = "sanitize-comments";
+    private static final String RESULT_TOPIC = "sanitized-comments";
     
+    @KafkaListener(topics = RESULT_TOPIC, groupId = "comment-group")
+    public void listenSanitizedComments(String message) {
+        try {
+            // Chuyển đổi JSON từ Kafka thành Comment
+            Comment sanitizedComment = gson.fromJson(message, Comment.class);
+
+            // Nếu comment không có ID, tạo một ID mới
+            if (sanitizedComment.getId() == null) {
+                sanitizedComment.setId(UUID.randomUUID().toString());
+            }
+
+            // Lấy CompletableFuture từ futures map và hoàn thành nó
+            CompletableFuture<Comment> future = futures.get(sanitizedComment.getId());
+            if (future != null) {
+                future.complete(sanitizedComment);  // Hoàn thành CompletableFuture với comment đã xử lý
+            } else {
+                // Nếu không tìm thấy CompletableFuture, log thông báo lỗi
+                System.err.println("No future found for comment ID: " + sanitizedComment.getId());
+            }
+        } catch (Exception e) {
+            // Ghi lại thông báo lỗi nếu có bất kỳ ngoại lệ nào xảy ra
+            e.printStackTrace();
+        }
+    }
+
+    // Nhận comment từ client và gửi tới Kafka để xử lý
     @PostMapping("/upload")
     public ResponseEntity<?> uploadComment(@RequestBody Comment comment) {
+        // Nếu comment không có ID, tạo một ID mới
+        if (comment.getId() == null) {
+            comment.setId(UUID.randomUUID().toString());
+        }
+
         try {
-            String commentJson = new Gson().toJson(commentRepository.save(comment));
-            kafkaTemplate.send(TOPIC, commentJson);
+            // Chuyển comment sang JSON và gửi qua Kafka tới Flask (topic: sanitize-comments)
+            String commentJson = gson.toJson(comment);
+            kafkaTemplate.send(SANITIZE_TOPIC, commentJson);
 
+            // Khởi tạo CompletableFuture để chờ phản hồi từ Flask qua Kafka (topic: sanitized-comments)
+            CompletableFuture<Comment> future = new CompletableFuture<>();
+            futures.put(comment.getId(), future);  // Lưu CompletableFuture vào futures map
 
-            Comment save = commentRepository.save(comment);
+            // Đợi phản hồi từ Kafka, timeout sau 30 giây
+            Comment sanitizedComment = future.get(30, TimeUnit.SECONDS); // Timeout 30 giây
 
-
-            //Produce message to kafka
-
-            return ResponseEntity.ok(HttpStatus.CREATED);
+            // Lưu comment đã xử lý vào MongoDB
+            Comment savedComment = commentRepository.save(sanitizedComment);
+            return ResponseEntity.ok(savedComment);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
+
+    
 
     
     @GetMapping("/get/{id}")
