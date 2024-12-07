@@ -11,7 +11,7 @@ spring:
 
 
   kafka:
-    bootstrap-servers: 192.168.120.131:31182    # Địa chỉ Kafka broker
+    bootstrap-servers: 192.168.2.240:9092    # Địa chỉ Kafka broker
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
