@@ -1,9 +1,10 @@
 name: Continuous Deployment for Comment Service
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Continuous Integration for User Service"]
+    types:
+      - completed
       
 jobs:
   deploy:
