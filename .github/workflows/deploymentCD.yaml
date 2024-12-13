@@ -2,7 +2,7 @@ name: Continuous Deployment for Comment Service
 
 on:
   workflow_run:
-    workflows: ["Continuous Integration for User Service"]
+    workflows: ["Continuous Integration for Comment Service"]
     types:
       - completed
       
