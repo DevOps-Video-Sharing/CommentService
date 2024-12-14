@@ -112,9 +112,9 @@ public class CommentController {
             //ELK
             MDC.put("type", "commentservice");
             MDC.put("action", "upload");
+            MDC.put("userID", comment.getUserId());
+            MDC.put("videoID", comment.getVideoId());
             logger.info("CommentId: " + savedComment.getId());
-            logger.info("VideoId: " + comment.getVideoId());
-            logger.info("UserId: " + comment.getUserId());
             
             return ResponseEntity.ok(savedComment);
         } catch (Exception e) {
