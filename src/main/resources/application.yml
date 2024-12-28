@@ -6,7 +6,7 @@ spring:
     name: comment-service
   data:
     mongodb:
-      uri: ${SPRING_DATA_MONGODB_URI:mongodb://10.40.0.6:27017/comment-service}
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://comment-mongo:27017/comment-service}
       # uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27777/comment-service}
 
 
