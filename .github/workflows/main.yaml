@@ -47,6 +47,6 @@ jobs:
     needs: scan-image
     uses: ./.github/workflows/notifyCI.yaml
     secrets:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}\
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      #Demo CI/CD Pipeline to Comment Service Repo
+      #Demo CICD Workflows
